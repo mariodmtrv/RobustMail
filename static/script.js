@@ -19,8 +19,11 @@ function address_server_validation(source, address) {
     });
 }
 function send_simple_message() {
+ this.senderEmail = $("#sender-email").val();
+ this.senderName = $("#sender-name").val();
+
     this.message = {
-        "sender": {"email": "", "name": ""}, "recipients": [{"email": "", "name": ""}],
+        "sender": {"email":  this.senderEmail, "name": this.senderName}, "recipients": [{"email": "", "name": ""}],
         "text": "",
         "subject": ""
     }
@@ -44,7 +47,6 @@ ResponseType = {
 $(document)
     .ready(
     function () {
-
         $("#sender-email").focusout(function () {
         this.email = $("#sender-email").val();
             address_server_validation("Sender email", this.email);
@@ -72,5 +74,4 @@ function display_response(type, message) {
         self.responseArea.addClass("alert alert-danger");
     }
     self.responseArea.html(message);
-    console.log(self.responseArea);
 }

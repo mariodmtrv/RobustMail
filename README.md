@@ -1,8 +1,9 @@
 # RobustMail
 [![Build Status](https://travis-ci.org/mariodmtrv/RobustMail.svg?branch=master)](https://travis-ci.org/mariodmtrv/RobustMail)
 
-An email service that accepts the necessary information and sends emails, using a standard email service.
-If one of the services goes down, it failovers to a different provider without affecting the customers.
+RobustMail is a mail delivery service, that allows abstraction between multiple mail delivery providers and 
+improves the reliability of message delivery by employing a failover mechanism in case some of the underlying 
+services is unavailable.
 
 ===
 Currently available mail providers

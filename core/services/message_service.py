@@ -16,10 +16,10 @@ def make_celery():
     :param main_app The Flask app
     """
     celery = Celery("tasks", broker=SETTINGS['MESSAGE_BROKER_URL'],
-                    backend='mongodb://heroku_c5qhsnwd:58ebv05endoo9rl4ilivfsd1jf@ds037215.mongolab.com:37215/heroku_c5qhsnwd')
+                    backend=SETTINGS['MONGO_URL'])
     celery.conf.update(
-            CELERY_TASK_SERIALIZER='json',
-            CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
+            CELERY_TASK_SERIALIZER='pickle',
+            CELERY_ACCEPT_CONTENT=['pickle'],  # Ignore other content
             CELERY_RESULT_SERIALIZER='json',
             CELERY_MONGODB_BACKEND_SETTINGS={
                 'database': 'heroku_c5qhsnwd',
@@ -52,26 +52,22 @@ def revive_provider(service, provider_ind):
 
 
 @celery.task(bind=True, default_retry_delay=15)
-def send_message(self, service, message):
+def send_message(self, service, email):
     provider_ind = 0
     for provider in service.providers:
         if service.is_available(provider_ind):
             try:
-                result = provider.send_message(message)
-                print(provider.name)
-                # if result is True:
-                #    pass
-                # stores message in mongo
+                result = provider.send_message(email)
                 return result
             except ServiceDownException:
-                service.__provider_avail[provider_ind] = False
-                revive_provider.apply_async(args=[service, provider_ind], countdown=15)
+                service.kill_provider(provider_ind)
+                revive_provider.apply(args=(service, provider_ind), countdown=15)
         provider_ind += 1
     if provider_ind >= len(service.providers):
-        raise self.retry(exc=ServiceDownException, countdown=2 ** self.request.retries)
+        raise self.retry(exc=ServiceDownException("Services failed"))
 
 
-class MessageService:
+class MessageService():
     def __init__(self):
         self.providers = []
         self.__provider_avail = []

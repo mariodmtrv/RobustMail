@@ -18,7 +18,6 @@ Validates an email address
         """
         return re.match(r"[a-zA-Z0-9]+(\.?[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.?[a-zA-Z0-9]+)*\.[a-zA-Z0-9]{2,}", email)
 
-
     @staticmethod
     def is_mx_valid(email):
         """

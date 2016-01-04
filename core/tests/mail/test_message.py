@@ -35,6 +35,12 @@ class MessageTestCase(unittest.TestCase):
         message.simple_message('user@domain.com', 'other.user@domain.com', 'Another spam message')
         self.assertEqual(message.text, 'Another spam message')
 
+    def test_template_message(self):
+        message = self.__create_message()
+        message.set_template_body("<h1>Hello $name, welcome to our $event</h1>",
+                                  **{"name": "Thomas", "event": "seminar"})
+        self.assertEqual(message.body, "<h1>Hello Thomas, welcome to our seminar</h1>")
+
     def test_message_validation_all_correct(self):
         message = self.__create_message()
         result = message.validate()

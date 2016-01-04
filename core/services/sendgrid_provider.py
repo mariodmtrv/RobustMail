@@ -19,8 +19,7 @@ class SendgridProvider(MailProvider):
 
     def __init__(self):
         self.__name = "SendGrid"
-
-    client = sendgrid.SendGridClient(SETTINGS["SENDGRID_USERNAME"], SETTINGS["SENDGRID_PASSWORD"])
+        self.client = sendgrid.SendGridClient(SETTINGS["SENDGRID_USERNAME"], SETTINGS["SENDGRID_PASSWORD"])
 
     def to_sendgrid(self, message):
         result_message = sendgrid.Mail()

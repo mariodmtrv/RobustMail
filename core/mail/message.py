@@ -1,5 +1,6 @@
 __author__ = 'mariodimitrov'
 from core.mail.email_validator import EmailValidator
+from string import Template
 
 
 class EmailUser:
@@ -57,7 +58,6 @@ class Message():
     def sender(self):
         return self.__sender
 
-
     def set_sender(self, email, name=''):
         self.__sender = EmailUser(email, name)
 
@@ -74,7 +74,6 @@ class Message():
     @subject.setter
     def subject(self, subject):
         self.__subject = subject
-
 
     @property
     def text(self):
@@ -100,13 +99,15 @@ class Message():
             return self.__options[name]
         return None
 
-    def set_template_body(self, body, **content):
+    def set_template_body(self, template_string, **content):
         """
         Create a rich text body using a template
-        :param text:string: A parameterized body message
+        :param template_string:string: A parameterized body message
+                Mark replaceable strings with $var_name
         :param content: dict: A dict with replaceable values
         """
-        raise NotImplementedError
+        t = Template(template_string)
+        self.__body = t.substitute(content)
 
     def get_cc(self):
         return self.__cc
@@ -116,7 +117,7 @@ class Message():
 
     def add_cc(self, email, name=''):
         """
-        Add a cc recipient to the message
+        Add a carbon copy recipient to the message
         """
         rec = EmailUser(email, name)
         self.__cc.append(rec)

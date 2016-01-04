@@ -7,3 +7,4 @@ dnspython3
 requests
 nose
 pymongo
+coverage

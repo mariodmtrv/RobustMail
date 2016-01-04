@@ -1,6 +1,7 @@
 __author__ = 'mariodimitrov'
 from abc import ABCMeta, abstractmethod
 from core.mail.message import Message
+from json import JSONEncoder
 
 
 class MailProvider(metaclass=ABCMeta):
