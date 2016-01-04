@@ -1,0 +1,28 @@
+.navbar-brand {
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    height: 50px
+}
+
+.navbar-brand:hover, .navbar-brand:focus {
+    text-decoration: none
+}
+
+#message-send-form {
+    max-width: 35em;
+    margin: 2em;
+    margin-left: 5em;
+
+}
+
+#submit {
+    margin: 1em;
+    float: right;
+}
+
+.correspondent {
+    width: 85%;
+    min-width: 15em;
+}

@@ -1,0 +1,9 @@
+unittest2
+sendgrid==1.5.19
+flask==0.10.1
+celery==3.1.19
+gunicorn==19.3.0
+dnspython3
+requests
+nose
+pymongo
