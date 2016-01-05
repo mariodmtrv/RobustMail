@@ -28,7 +28,6 @@ function mock_message(){
     return result;
 }
 function collect_data(){
-
  var senderEmail = $("#sender-email").val();
  var senderName = $("#sender-name").val();
  var recipientEmail = $("#recipient-email").val();
@@ -53,12 +52,11 @@ var message = collect_data();
         dataType: "json",
         async: true,
     }).complete(function (data) {
-   if (data.responseJSON["correct"] == false){
-        console.log(data.responseJSON)
-        display_response(ResponseType.FAILURE, data.responseJSON.message);
-     }
-     else {
+    if (data.responseJSON["correct"] == true){
       display_response(ResponseType.SUCCESS, data.responseJSON.message);
+     }
+     else{
+        display_response(ResponseType.FAILURE, data.responseJSON.message);
      }
     });
 }
@@ -80,11 +78,8 @@ $(document)
             address_server_validation("Recipient email",email);
         })
     });
+
 function display_response(type, message) {
-    /*alert alert-warning
-     alert alert-danger
-     alert alert-success
-     */
     self.responseArea = $('#message');
     console.log("Test");
     if (type == ResponseType.SUCCESS) {

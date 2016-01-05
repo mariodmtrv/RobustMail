@@ -30,6 +30,11 @@ def gen_email_user(data):
 
 @app.route('/api/send-mail', methods=['POST'])
 def send_mail():
+    """
+    Tries to construct a message from the passed arguments,
+    validates it and passes it to the MessageService for sending
+    :return: Success status and result message
+    """
     data = request.get_json()
     message = Message()
     if "sender" in data and data["sender"] is not None:
@@ -61,13 +66,7 @@ def send_mail():
     if not is_valid:
         return SendEmailResponse(is_valid[0], is_valid[1]).to_JSON()
     result = send_message.delay(message_service, message)
-    return SendEmailResponse(True, "Message accepted!").to_JSON()
-
-
-@app.route('/add')
-def add():
-    result = add_together.delay(14, 25)
-    return result.wait()
+    return SendEmailResponse(True, "Message accepted for processing!").to_JSON()
 
 
 @app.route('/hello')

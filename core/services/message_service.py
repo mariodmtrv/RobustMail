@@ -13,13 +13,12 @@ logger = get_task_logger(__name__)
 def make_celery():
     """
     Integrates Celery with Flask and configures its message broker
-    :param main_app The Flask app
     """
     celery = Celery("tasks", broker=SETTINGS['MESSAGE_BROKER_URL'],
                     backend=SETTINGS['REDIS_URL'])
     celery.conf.update(
             CELERY_TASK_SERIALIZER='pickle',
-            CELERY_ACCEPT_CONTENT=['pickle'],  # Ignore other content
+            CELERY_ACCEPT_CONTENT=['pickle'],
             CELERY_RESULT_SERIALIZER='json',
             BROKER_POOL_LIMIT=1,
             CELERYD_CONCURRENCY=2,
@@ -47,6 +46,11 @@ def revive_provider(service, provider_ind):
 
 @celery.task(bind=True, default_retry_delay=15, max_retries=3)
 def send_message(self, service, email):
+    """
+    :param service: The message service that offers multiple providers
+    :param email:
+    :return: True if sending was
+    """
     provider_ind = 0
     for provider in service.providers:
         if service.is_available(provider_ind):

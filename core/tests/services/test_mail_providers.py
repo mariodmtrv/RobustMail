@@ -7,7 +7,8 @@ except ImportError:
 
 from core.services.mailgun_provider import MailGunProvider
 from core.services.sendgrid_provider import SendgridProvider
-from core.tests.services.testing_data import good_message, bad_message_wrong_address
+from core.tests.testing_data import good_message_single_recipient, bad_message_wrong_address, unicode_message, \
+    no_recipient_has_cc_bcc, no_content_message
 
 
 class MailgunProviderTestCase(unittest.TestCase):
@@ -16,11 +17,25 @@ class MailgunProviderTestCase(unittest.TestCase):
         mailgun = MailGunProvider()
         self.assertEqual(mailgun.send_message(m), False)
 
-    @unittest.skip("Actual message sending")
     def test_simple_sending_successful(self):
-        m = good_message()
+        m = good_message_single_recipient()
         mailgun = MailGunProvider()
         self.assertEqual(mailgun.send_message(m), True)
+
+    def test_unicode_message(self):
+        m = unicode_message()
+        mailgun = MailGunProvider()
+        self.assertEqual(mailgun.send_message(m), True)
+
+    def test_no_recipient_has_cc_bcc(self):
+        m = no_recipient_has_cc_bcc()
+        mailgun = MailGunProvider()
+        self.assertEqual(mailgun.send_message(m), False)
+
+    def test_no_content(self):
+        m = no_content_message()
+        mailgun = MailGunProvider()
+        self.assertEqual(mailgun.send_message(m), False)
 
 
 class SendgridProviderTestCase(unittest.TestCase):
@@ -32,11 +47,25 @@ class SendgridProviderTestCase(unittest.TestCase):
         sendgrid = SendgridProvider()
         self.assertEqual(sendgrid.send_message(m), True)
 
-    @unittest.skip("Actual message sending")
     def test_simple_sending_successful(self):
-        m = good_message()
+        m = good_message_single_recipient()
         sendgrid = SendgridProvider()
         self.assertEqual(sendgrid.send_message(m), True)
+
+    def test_unicode_message(self):
+        m = unicode_message()
+        sendgrid = SendgridProvider()
+        self.assertEqual(sendgrid.send_message(m), True)
+
+    def test_no_recipient_has_cc_bcc(self):
+        m = no_recipient_has_cc_bcc()
+        sendgrid = SendgridProvider()
+        self.assertEqual(sendgrid.send_message(m), False)
+
+    def test_no_content(self):
+        m = no_content_message()
+        sendgrid = SendgridProvider()
+        self.assertEqual(sendgrid.send_message(m), False)
 
 
 if __name__ == '__main__':

@@ -156,7 +156,7 @@ class Message():
         :return: A tuple with boolean validation value and validation text result
                  If a validation failed the first failed check will be returned
         """
-        if len(self.__recipients) == 0 and len(self.__cc) == 0 and len(self.__bcc) == 0:
+        if len(self.__recipients) == 0:
             return (False, "No recipients added")
         if self.text == "" and self.body == "":
             return (False, "Text or body is required")
