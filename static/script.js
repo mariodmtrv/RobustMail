@@ -55,6 +55,7 @@ var message = mock_message();
         dataType: "json"
     }).complete(function (data) {
    if (data.responseJSON["correct"] == false){
+        console.log(data.responseJSON)
         display_response(ResponseType.FAILURE, data.responseJSON.message);
      }
      else {

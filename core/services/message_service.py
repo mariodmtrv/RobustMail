@@ -22,10 +22,8 @@ def make_celery():
             CELERY_ACCEPT_CONTENT=['pickle'],  # Ignore other content
             CELERY_RESULT_SERIALIZER='json',
             BROKER_POOL_LIMIT=1,
-            CELERY_MONGODB_BACKEND_SETTINGS={
-                'database': 'heroku_c5qhsnwd',
-                'taskmeta_collection': 'CeleryMessages',
-            }
+            CELERYD_CONCURRENCY=2,
+            CELERYD_PROCESSES=1
     )
     TaskBase = celery.Task
 
@@ -52,7 +50,7 @@ def revive_provider(service, provider_ind):
     service.revive_provider(provider_ind)
 
 
-@celery.task(bind=True, default_retry_delay=15)
+@celery.task(bind=True, default_retry_delay=15, max_retries=2)
 def send_message(self, service, email):
     provider_ind = 0
     for provider in service.providers:
@@ -62,9 +60,9 @@ def send_message(self, service, email):
                 return result
             except ServiceDownException:
                 service.kill_provider(provider_ind)
-                revive_provider.apply(args=(service, provider_ind), countdown=15)
+                revive_provider.apply_async(args=(service, provider_ind), countdown=15)
         provider_ind += 1
-    if provider_ind >= len(service.providers):
+    if provider_ind > len(service.providers):
         raise self.retry(exc=ServiceDownException("Services failed"))
 
 
