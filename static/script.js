@@ -22,7 +22,7 @@ function mock_message(){
  var message = {
         "sender": {"email":  "regular@domain.com", "name": "Regular spammer"}, "recipients": [{"email": "mario.dimitrov@ymail.com", "name": "Regular recipient"}],
         "text": "Another spam message",
-        "subject": "Very important"
+        "subject": "Message from javascript"
     }
      var result = JSON.stringify(message);
     return result;
@@ -35,8 +35,6 @@ function collect_data(){
  var recipientName = $("#recipient-name").val();
  var text = $("#message-text").val();
  var subject = $("#subject").val();
-
-
     var message = {
         "sender": {"email":  senderEmail, "name": senderName}, "recipients": [{"email": recipientEmail, "name": recipientName}],
         "text": text,
@@ -46,13 +44,14 @@ function collect_data(){
     return result;
 }
 function send_simple_message() {
-var message = mock_message();
+var message = collect_data();
     $.ajax({
         type: "POST",
         url: "/api/send-mail",
         data: message,
         contentType: "application/json; charset=utf-8",
-        dataType: "json"
+        dataType: "json",
+        async: true,
     }).complete(function (data) {
    if (data.responseJSON["correct"] == false){
         console.log(data.responseJSON)

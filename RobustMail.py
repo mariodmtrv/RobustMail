@@ -61,7 +61,9 @@ def send_mail():
     if not is_valid:
         return SendEmailResponse(is_valid[0], is_valid[1]).to_JSON()
     result = send_message.delay(message_service, message)
-    return SendEmailResponse(True, "Successfully sent!").to_JSON()
+    if result == True:
+        return SendEmailResponse(True, "Successfully sent!").to_JSON()
+    return SendEmailResponse(False, "Sending failed").to_JSON()
 
 
 @app.route('/add')

@@ -19,6 +19,7 @@ class ServiceTestCase(unittest.TestCase):
     def test_send_message_successful(self):
         service = create_message_service()
         message = good_message()
+        message.subject = "From robust provider test"
         result = send_message.apply(args=(service, message)).get()
         eq_(result, True)
 

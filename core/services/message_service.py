@@ -16,7 +16,7 @@ def make_celery():
     :param main_app The Flask app
     """
     celery = Celery("tasks", broker=SETTINGS['MESSAGE_BROKER_URL'],
-                    backend=SETTINGS['MESSAGE_BROKER_URL'])
+                    backend=SETTINGS['REDIS_URL'])
     celery.conf.update(
             CELERY_TASK_SERIALIZER='pickle',
             CELERY_ACCEPT_CONTENT=['pickle'],  # Ignore other content
