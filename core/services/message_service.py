@@ -40,17 +40,12 @@ def make_celery():
 celery = make_celery()
 
 
-@celery.task()
-def add_together(a, b):
-    return a + b
-
-
 @celery.task(name="revive_provider")
 def revive_provider(service, provider_ind):
     service.revive_provider(provider_ind)
 
 
-@celery.task(bind=True, default_retry_delay=15, max_retries=2)
+@celery.task(bind=True, default_retry_delay=15, max_retries=3)
 def send_message(self, service, email):
     provider_ind = 0
     for provider in service.providers:
