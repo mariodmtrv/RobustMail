@@ -3,13 +3,13 @@
  */
 
 function address_server_validation(source, address) {
-    this.message = {
+    var message = {
         "email": address
     }
     $.ajax({
         type: "POST",
         url: "/api/validate-email",
-        data: JSON.stringify(this.message),
+        data: JSON.stringify(message),
         contentType: "application/json; charset=utf-8",
         dataType: "json"
     }).complete(function (data) {
@@ -18,25 +18,48 @@ function address_server_validation(source, address) {
      }
     });
 }
-function send_simple_message() {
- this.senderEmail = $("#sender-email").val();
- this.senderName = $("#sender-name").val();
-
-    this.message = {
-        "sender": {"email":  this.senderEmail, "name": this.senderName}, "recipients": [{"email": "", "name": ""}],
-        "text": "",
-        "subject": ""
+function mock_message(){
+ var message = {
+        "sender": {"email":  "regular@domain.com", "name": "Regular spammer"}, "recipients": [{"email": "mario.dimitrov@ymail.com", "name": "Regular recipient"}],
+        "text": "Another spam message",
+        "subject": "Very important"
     }
+     var result = JSON.stringify(message);
+    return result;
+}
+function collect_data(){
 
+ var senderEmail = $("#sender-email").val();
+ var senderName = $("#sender-name").val();
+ var recipientEmail = $("#recipient-email").val();
+ var recipientName = $("#recipient-name").val();
+ var text = $("#message-text").val();
+ var subject = $("#subject").val();
+
+
+    var message = {
+        "sender": {"email":  senderEmail, "name": senderName}, "recipients": [{"email": recipientEmail, "name": recipientName}],
+        "text": text,
+        "subject": subject
+    }
+    var result = JSON.stringify(message);
+    return result;
+}
+function send_simple_message() {
+var message = mock_message();
     $.ajax({
         type: "POST",
-        url: "api/send-mail",
-        data: this.message,
+        url: "/api/send-mail",
+        data: message,
         contentType: "application/json; charset=utf-8",
         dataType: "json"
     }).complete(function (data) {
-
-        // success
+   if (data.responseJSON["correct"] == false){
+        display_response(ResponseType.FAILURE, data.responseJSON.message);
+     }
+     else {
+      display_response(ResponseType.SUCCESS, data.responseJSON.message);
+     }
     });
 }
 ResponseType = {
@@ -48,13 +71,13 @@ $(document)
     .ready(
     function () {
         $("#sender-email").focusout(function () {
-        this.email = $("#sender-email").val();
-            address_server_validation("Sender email", this.email);
-            console.log(this.email);
+        var email = $("#sender-email").val();
+            address_server_validation("Sender email", email);
+            console.log(email);
         })
         $("#recipient-email").focusout(function () {
-           this.email = $("#recipient-email").val();
-            address_server_validation("Recipient email",this.email);
+           var email = $("#recipient-email").val();
+            address_server_validation("Recipient email",email);
         })
     });
 function display_response(type, message) {

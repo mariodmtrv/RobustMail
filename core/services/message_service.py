@@ -16,11 +16,12 @@ def make_celery():
     :param main_app The Flask app
     """
     celery = Celery("tasks", broker=SETTINGS['MESSAGE_BROKER_URL'],
-                    backend=SETTINGS['MONGO_URL'])
+                    backend=SETTINGS['MESSAGE_BROKER_URL'])
     celery.conf.update(
             CELERY_TASK_SERIALIZER='pickle',
             CELERY_ACCEPT_CONTENT=['pickle'],  # Ignore other content
             CELERY_RESULT_SERIALIZER='json',
+            BROKER_POOL_LIMIT=1,
             CELERY_MONGODB_BACKEND_SETTINGS={
                 'database': 'heroku_c5qhsnwd',
                 'taskmeta_collection': 'CeleryMessages',

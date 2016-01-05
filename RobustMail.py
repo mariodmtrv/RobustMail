@@ -19,48 +19,51 @@ class SendEmailResponse():
 
 
 def gen_email_user(data):
-    if len(data) >= 1:
-        email = data[0].trim()
+    if data["email"] is not None:
+        email = data["email"]
         name = ""
-        if len(data) > 1:
-            name = data[1].trim()
+        if data["name"] is not None:
+            name = data["name"]
         return (email, name)
     return None
 
 
-@app.route('/api/send-mail')
+@app.route('/api/send-mail', methods=['POST'])
 def send_mail():
     data = request.get_json()
     message = Message()
-    if data["sender"] is not None:
+    if "sender" in data and data["sender"] is not None:
         result = gen_email_user(data["sender"])
         if result is not None:
             message.set_sender(result[0], result[1])
-    if data["subject"] is not None:
+    if "subject" in data and data["subject"] is not None:
         message.subject = data["subject"]
-    if data["text"] is not None:
+    if "text" in data and data["text"] is not None:
         message.text = data["text"]
-    if data["recipients"] is not None and len(data["recipients"]) > 0:
+    if "recipients" in data and data["recipients"] is not None and len(data["recipients"]) > 0:
         for recipient in data["recipients"]:
             result = gen_email_user(recipient)
             if result is not None:
                 message.add_recipient(result[0], result[1])
-    if data["cc"] is not None and len(data["cc"]) > 0:
+    if 'cc' in data and data["cc"] is not None and len(data["cc"]) > 0:
         for recipient in data["cc"]:
             result = gen_email_user(recipient)
             if result is not None:
                 message.add_cc(result[0], result[1])
-    if data["bcc"] is not None and len(data["bcc"]) > 0:
+    if "bcc" in data and data["bcc"] is not None and len(data["bcc"]) > 0:
         for recipient in data["bcc"]:
             result = gen_email_user(recipient)
             if result is not None:
                 message.add_bcc(result[0], result[1])
-    if data["body"] is not None:
+    if "body" in data and data["body"] is not None:
         message.body = data["body"]
     is_valid = message.validate()
     if not is_valid:
         return SendEmailResponse(is_valid[0], is_valid[1]).to_JSON()
-    send_message.apply_async(message_service, message)
+    result = send_message.delay(message_service, message)
+    if result == True:
+        return SendEmailResponse(True, "Successfully sent!").to_JSON()
+    return SendEmailResponse(False, "Sending failed!").to_JSON()
 
 
 @app.route('/add')
