@@ -7,7 +7,7 @@ except ImportError:
 
 from core.services.mailgun_provider import MailGunProvider
 from core.services.sendgrid_provider import SendgridProvider
-from core.tests.testing_data import good_message_single_recipient, bad_message_wrong_address, unicode_message, \
+from core.tests.services.testing_data import good_message_single_recipient, bad_message_wrong_address, unicode_message, \
     no_recipient_has_cc_bcc, no_content_message
 
 

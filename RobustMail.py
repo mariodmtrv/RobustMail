@@ -63,15 +63,10 @@ def send_mail():
     if "body" in data and data["body"] is not None:
         message.body = data["body"]
     is_valid = message.validate()
-    if not is_valid:
+    if not is_valid[0]:
         return SendEmailResponse(is_valid[0], is_valid[1]).to_JSON()
     result = send_message.delay(message_service, message)
     return SendEmailResponse(True, "Message accepted for processing!").to_JSON()
-
-
-@app.route('/hello')
-def hello():
-    return "Hello RobustMail"
 
 
 class EmailValidatorResponse():
@@ -86,7 +81,6 @@ class EmailValidatorResponse():
 @app.route('/api/validate-email', methods=['POST'])
 def validate_email():
     """
-
         :param email: string the address to be validates
         :return: response: EmailValidatorResponse JSON stringified success status and message
     """
@@ -107,4 +101,4 @@ def root():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

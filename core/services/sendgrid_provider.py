@@ -46,7 +46,6 @@ class SendgridProvider(MailProvider):
             return False
         elif result[0] >= 500:
             raise ServiceDownException("Sendgrid service failure " + str(result[1]))
-            return False
 
     def get_delivery_status(self, message):
         raise NotImplementedError

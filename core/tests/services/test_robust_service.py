@@ -6,7 +6,7 @@ except ImportError:
 from nose.tools import eq_
 
 from core.services.message_service import create_message_service, send_message, revive_provider
-from core.tests.testing_data import good_message_single_recipient, DummyMailProvider
+from core.tests.services.testing_data import good_message_single_recipient, DummyMailProvider
 
 
 class ServiceTestCase(unittest.TestCase):
