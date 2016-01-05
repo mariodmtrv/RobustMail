@@ -2,7 +2,7 @@ from flask import Flask
 import json
 from core.mail.email_validator import EmailValidator
 import logging
-from core.services.message_service import send_message, add_together, message_service
+from core.services.message_service import send_message, message_service
 from flask import request
 from core.mail.message import Message
 

@@ -6,16 +6,12 @@ try:
 except ImportError:
     import unittest
 
-from core.services.message_service import add_together, create_message_service, send_message, revive_provider
+from core.services.message_service import create_message_service, send_message, revive_provider
 from core.tests.services.testing_data import good_message, bad_message_wrong_address, DummyMailProvider
 from nose.tools import eq_
 
 
 class ServiceTestCase(unittest.TestCase):
-    def test_service_operation(self):
-        result = add_together.apply(args=("Service", "Operational")).get()
-        eq_(result, "ServiceOperational")
-
     def test_send_message_successful(self):
         service = create_message_service()
         message = good_message()
