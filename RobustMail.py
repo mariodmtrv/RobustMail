@@ -34,6 +34,9 @@ def send_mail():
     Tries to construct a message from the passed arguments,
     validates it and passes it to the MessageService for sending
     :return: Success status and result message
+    In case the message did not fulfill the criteria returns a message with the first failure
+    Read more at
+    https://github.com/mariodmtrv/RobustMail/wiki#send-a-message
     """
     data = request.get_json()
     message = Message()
@@ -82,7 +85,9 @@ class EmailValidatorResponse():
 def validate_email():
     """
         :param email: string the address to be validates
-        :return: response: EmailValidatorResponse JSON stringified success status and message
+        :return: response: EmailValidatorResponse success status and message
+        Read more at
+        https://github.com/mariodmtrv/RobustMail/wiki#check-an-email
     """
     email = request.get_json()["email"].strip()
     if not EmailValidator.is_syntax_valid(email):

@@ -22,6 +22,12 @@ class SendgridProvider(MailProvider):
         self.client = sendgrid.SendGridClient(SETTINGS["SENDGRID_USERNAME"], SETTINGS["SENDGRID_PASSWORD"])
 
     def to_sendgrid(self, message):
+        """
+
+        :param message: Message
+        :return: Adapter from Message to sendgrid message
+        :rtype: sendgrid.Mail
+        """
         result_message = sendgrid.Mail()
         result_message.set_from(message.sender.email)
         result_message.set_from_name(message.sender.name)

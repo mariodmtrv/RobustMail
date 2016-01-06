@@ -9,9 +9,6 @@ class MailProvider(metaclass=ABCMeta):
     Represents an abstract mail provider
     """
 
-    def get_name(self):
-        return self.__name
-
     def send_message(self, message):
         """
         :param message:

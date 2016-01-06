@@ -4,6 +4,10 @@ from string import Template
 
 
 class EmailUser:
+    """
+    Represents a participant in email conversation - sender or recipient
+    """
+
     def __init__(self, email, name=''):
         self.__email = email
         self.__name = name
@@ -29,7 +33,7 @@ class EmailUser:
 
 class Message():
     """
-    Message class
+    Represents a message
     """
 
     def __init__(self):
@@ -38,8 +42,8 @@ class Message():
         """
         self.__sender = None
         self.__recipients = []
-        self.__subject = ''
-        self.__text = ''
+        self.__subject = ""
+        self.__text = ""
         self.__options = {}
         self.__body = ""
         self.__cc = []

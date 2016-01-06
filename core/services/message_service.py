@@ -12,10 +12,11 @@ logger = get_task_logger(__name__)
 
 def make_celery():
     """
-    Integrates Celery with Flask and configures its message broker
+    Configures Celery task queue
     """
     celery = Celery("tasks", broker=SETTINGS['MESSAGE_BROKER_URL'],
                     backend=SETTINGS['REDIS_URL'])
+    # Settings to adjust to the AMQP message quota
     celery.conf.update(
             CELERY_TASK_SERIALIZER='pickle',
             CELERY_ACCEPT_CONTENT=['pickle'],
@@ -41,15 +42,21 @@ celery = make_celery()
 
 @celery.task(name="revive_provider")
 def revive_provider(service, provider_ind):
+    """
+       Makes a provider in the service available for sending attempts
+       :param provider_ind: Index of the provider
+       """
     service.revive_provider(provider_ind)
 
 
 @celery.task(bind=True, default_retry_delay=15, max_retries=3)
 def send_message(self, service, email):
     """
+    Sends a message with the first available provider
+    In case it fails, attempts with the next one and sets a countdown when to try again with the failed one
     :param service: The message service that offers multiple providers
-    :param email:
-    :return: True if sending was
+    :param email:The message
+    :return: True if sending was successful, False if the provider did not accept it
     """
     provider_ind = 0
     for provider in service.providers:
@@ -61,7 +68,7 @@ def send_message(self, service, email):
                 service.kill_provider(provider_ind)
                 revive_provider.apply_async(args=(service, provider_ind), countdown=15)
         provider_ind += 1
-    if provider_ind > len(service.providers):
+    if provider_ind >= len(service.providers):
         raise self.retry(exc=ServiceDownException("Services failed"))
 
 
@@ -79,12 +86,20 @@ class MessageService():
             self.__provider_avail.append(True)
 
     def revive_provider(self, provider_ind):
+        """
+        Makes a provider available for sending emails again
+        :param provider_ind: Index of the provider
+        """
         self.__provider_avail[provider_ind] = True
 
     def is_available(self, provider_ind):
         return self.__provider_avail[provider_ind]
 
     def kill_provider(self, provider_ind):
+        """
+        Makes the provider unavailable for sending attempts
+        :param provider_ind: Index of the provider
+        """
         self.__provider_avail[provider_ind] = False
 
 
