@@ -5,28 +5,28 @@
 - [x] Extended message features
 
 ## Email services
-- [x] Basic message abstraction
-- [ ] Advanced message abstraction
+- [x] Message abstraction
 
 ### Email delivery services
-- [ ] Reserach supported features by major mail delivery services 
+- [x] Reserach supported features by major mail delivery services 
+- [x] Provider priority and lifecycle
 
 #### MailGun
 
 - [x] Basic integration
 - [ ] Complex integration 
-- [ ] Testing
+- [x] Testing
 
 #### Sendgrid
 
-- [ ] Basic integration
+- [x] Basic integration
 - [ ] Complex integration 
-- [ ] Testing
+- [x] Testing
 
 ## Message broker
-- [ ] Celery integration
-- [ ] Rabbit MQ integration
-- [ ] Testing
+- [x] Celery integration
+- [x] Rabbit MQ integration
+- [x] Testing
 
 ### Persistence
 - [ ] Mongo DB persisting
@@ -36,14 +36,14 @@
 
 ## API
 
-- [ ] Basic calls
+- [x] Basic calls
 - [ ] Advanced calls 
 
 ## UI
 
-- [ ] Basic UI
+- [x] Basic UI
 - [ ] More complex features
-- [ ] Message flow feedback
+- [x] Message flow feedback
 
 # Lifecycle
 - [x] Travis CI integration
