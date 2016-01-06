@@ -1,32 +1,9 @@
 /**
  * Created by mariodimitrov
  */
-
-function address_server_validation(source, address) {
-    var message = {
-        "email": address
-    }
-    $.ajax({
-        type: "POST",
-        url: "/api/validate-email",
-        data: JSON.stringify(message),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json"
-    }).complete(function (data) {
-    if (data.responseJSON["correct"] == false){
-        display_response(ResponseType.FAILURE, source + "  " + data.responseJSON.message);
-     }
-    });
-}
-function mock_message(){
- var message = {
-        "sender": {"email":  "regular@domain.com", "name": "Regular spammer"}, "recipients": [{"email": "mario.dimitrov@ymail.com", "name": "Regular recipient"}],
-        "text": "Another spam message",
-        "subject": "Message from javascript"
-    }
-     var result = JSON.stringify(message);
-    return result;
-}
+ /*
+ Collects the data from the message sending form
+ */
 function collect_data(){
  var senderEmail = $("#sender-email").val();
  var senderName = $("#sender-name").val();
@@ -42,6 +19,18 @@ function collect_data(){
     var result = JSON.stringify(message);
     return result;
 }
+function mock_message(){
+ var message = {
+        "sender": {"email":  "regular@domain.com", "name": "Regular spammer"}, "recipients": [{"email": "mario.dimitrov@ymail.com", "name": "Regular recipient"}],
+        "text": "Another spam message",
+        "subject": "Message from javascript"
+    }
+     var result = JSON.stringify(message);
+    return result;
+}
+/*
+Sends a simple message request and displays the server response
+*/
 function send_simple_message() {
 var message = collect_data();
     $.ajax({
@@ -53,12 +42,40 @@ var message = collect_data();
         async: true,
     }).complete(function (data) {
     if (data.responseJSON["correct"] == true){
-      display_response(ResponseType.SUCCESS, data.responseJSON.message);
+      displayResponse(ResponseType.SUCCESS, data.responseJSON.message);
+      /*Clears the recipient*/
+      $("#recipient-email").html("");
+       $("#recipient-name").html("");
      }
      else{
-        display_response(ResponseType.FAILURE, data.responseJSON.message);
+        displayResponse(ResponseType.FAILURE, data.responseJSON.message);
      }
     });
+    }
+function address_server_validation(source, address) {
+    var message = {
+        "email": address
+    }
+    $.ajax({
+        type: "POST",
+        url: "/api/validate-email",
+        data: JSON.stringify(message),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json"
+    }).complete(function (data) {
+    if (data.responseJSON["correct"] == false){
+        displayResponse(ResponseType.FAILURE, source + "  " + data.responseJSON.message);
+     }
+    });
+}
+function mock_message(){
+ var message = {
+        "sender": {"email":  "regular@domain.com", "name": "Regular spammer"}, "recipients": [{"email": "mario.dimitrov@ymail.com", "name": "Regular recipient"}],
+        "text": "Another spam message",
+        "subject": "Message from javascript"
+    }
+     var result = JSON.stringify(message);
+    return result;
 }
 ResponseType = {
     SUCCESS: 0,
@@ -71,25 +88,40 @@ $(document)
         $("#sender-email").focusout(function () {
         var email = $("#sender-email").val();
             address_server_validation("Sender email", email);
-            console.log(email);
         })
+          $("#sender-email").focusin(function () {
+            clearResponseArea();
+          });
+
         $("#recipient-email").focusout(function () {
            var email = $("#recipient-email").val();
             address_server_validation("Recipient email",email);
-        })
+        });
+         $("#recipient-email").focusin(function () {
+            clearResponseArea();
+          });
     });
-
-function display_response(type, message) {
-    self.responseArea = $('#message');
-    console.log("Test");
+/*
+Displays the server response in a stylized message area
+*/
+function displayResponse(type, message) {
+    clearResponseArea();
+    var responseArea = $('#message');
     if (type == ResponseType.SUCCESS) {
-        self.responseArea.addClass("alert alert-success");
+        responseArea.addClass("alert alert-success");
     }
     else if (type = ResponseType.WARNING) {
-        self.responseArea.addClass("alert alert-warning");
+        responseArea.addClass("alert alert-warning");
     }
     else if(type == ResponseType.FAILURE){
-        self.responseArea.addClass("alert alert-danger");
+        responseArea.addClass("alert alert-danger");
     }
-    self.responseArea.html(message);
+    responseArea.html(message);
+}
+function clearResponseArea(){
+    var responseArea = $('#message');
+       responseArea.removeClass(function() {
+  return responseArea.attr( "class" );
+    });
+    responseArea.html("");
 }
