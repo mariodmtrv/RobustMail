@@ -2,7 +2,7 @@ unittest2
 sendgrid==1.5.19
 flask==1.0
 celery==3.1.19
-gunicorn==19.3.0
+gunicorn==19.5.0
 dnspython3
 requests
 nose
